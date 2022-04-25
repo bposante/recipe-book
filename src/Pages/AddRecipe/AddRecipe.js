@@ -1,7 +1,11 @@
 import React from "react";
 import "./AddRecipe.css";
+import Recipe from "../../models";
+import { Service } from "../../Service";
 
 class AddRecipe extends React.Component {
+	service;
+
 	constructor(props) {
 		super(props);
 		this.state = { name: "", ingredients: "", instructions: "", picture: "", time: "" };
@@ -36,6 +40,15 @@ class AddRecipe extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
+		this.props.addRecipe(
+			new Recipe(
+				this.state.name,
+				this.state.ingredients,
+				this.state.instructions,
+				this.state.picture,
+				this.state.time
+			)
+		);
 	}
 
 	render() {

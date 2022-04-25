@@ -7,3 +7,5 @@ export class Recipe {
 		this.time = time;
 	}
 }
+
+export default Recipe;

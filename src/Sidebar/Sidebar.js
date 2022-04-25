@@ -1,17 +1,16 @@
 import React from "react";
 import "./Sidebar.css";
 import Card from "../Card/Card";
-import { Recipe } from "../models";
 
-class Sidebar extends React.Component {
-	render() {
-		return (
-			<div className="sidebar">
-				<Card recipe={new Recipe("hello", "hello", "hello", "hello", "hello")}></Card>
-				<Card recipe={new Recipe("hello", "hello", "hello", "hello", "hello")}></Card>
-			</div>
-		);
-	}
-}
+export const Sidebar = (props) => {
+	const recipes = props.getRecipes();
+	return (
+		<div className="sidebar">
+			{recipes.map((recipe, i) => (
+				<Card recipe={recipe} key={i} selectRecipe={props.selectRecipe} showRecipe={props.showRecipe} />
+			))}
+		</div>
+	);
+};
 
 export default Sidebar;

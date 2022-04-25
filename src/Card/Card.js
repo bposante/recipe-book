@@ -1,22 +1,27 @@
-import React from 'react';
-import './Card.css';
+import React from "react";
+import "./Card.css";
 
 class Card extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            recipe: props.recipe,
-        };
-    }
+	constructor(props) {
+		super(props);
+		this.selectRecipe = this.selectRecipe.bind(this);
+	}
 
-    render() {
-        return (
-            <div className='card-component'>
-                <div >{this.state.recipe.name}</div>
-                <div >{this.state.recipe.ingredients}</div>
-            </div>
-        )
-    }
+	selectRecipe() {
+		this.props.selectRecipe(this.props.recipe);
+		this.props.showRecipe();
+	}
+
+	render() {
+		return (
+			<div className="card-component" onClick={this.selectRecipe}>
+				<div>{this.props.recipe.name}</div>
+				<div>{this.props.recipe.ingredients}</div>
+				<div>{this.props.recipe.picture}</div>
+				<div>{this.props.recipe.time}</div>
+			</div>
+		);
+	}
 }
 
 export default Card;
