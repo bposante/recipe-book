@@ -55,31 +55,47 @@ class AddRecipe extends React.Component {
 		return (
 			<div className="recipe-form">
 				<form onSubmit={this.handleSubmit}>
-					<label>
-						Name:
-						<input type={"text"} value={this.state.name} onChange={this.handleName}></input>
-					</label>
-					<label>
-						Ingredients:
-						<input type={"text"} value={this.state.ingredients} onChange={this.handleIngredients}></input>
-					</label>
-					<label>
-						Instructions:
-						<input
-							type={"textbox"}
-							value={this.state.instructions}
-							onChange={this.handleInstructions}
-						></input>
-					</label>
-					<label>
-						Picture:
-						<input type={"text"} value={this.state.picture} onChange={this.handlePicture}></input>
-					</label>
-					<label>
-						Time:
-						<input type={"number"} value={this.state.time} onChange={this.handleTime}></input>
-					</label>
-					<input type={"submit"} value="Submit"></input>
+					<div>
+						<label>
+							Name:
+							<input type={"text"} value={this.state.name} onChange={this.handleName}></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							Ingredients:
+							<input
+								type={"text"}
+								value={this.state.ingredients}
+								onChange={this.handleIngredients}
+							></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							Instructions:
+							<input
+								type={"textbox"}
+								value={this.state.instructions}
+								onChange={this.handleInstructions}
+							></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							Picture:
+							<input type={"text"} value={this.state.picture} onChange={this.handlePicture}></input>
+						</label>
+					</div>
+					<div>
+						<label>
+							Time:
+							<input type={"number"} value={this.state.time} onChange={this.handleTime}></input>
+						</label>
+					</div>
+					<div>
+						<input type={"submit"} value="Submit"></input>
+					</div>
 				</form>
 			</div>
 		);

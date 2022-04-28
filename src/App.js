@@ -34,10 +34,6 @@ class App extends React.Component {
 		console.log("selecting recipe:", recipe);
 		console.log("page:", this.state.page);
 		this.currentRecipe = recipe;
-		// this.setState({
-		// 	currentRecipe: recipe,
-		// 	page: "show recipe",
-		// });
 	}
 
 	render() {
