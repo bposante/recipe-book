@@ -4,3 +4,7 @@
     border: 1px solid red;
     justify-content: space-between;
 }
+
+.add-recipe_button {
+    margin-left: 20px !important;
+}

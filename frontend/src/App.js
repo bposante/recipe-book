@@ -54,6 +54,7 @@ class App extends React.Component {
       <div>
         <Header addRecipe={() => this.setState({ page: "add recipe" })} />
         <Grid
+          className="app-body"
           page={this.state.page}
           addRecipe={this.addRecipe}
           getRecipes={this.getRecipes}
@@ -61,7 +62,6 @@ class App extends React.Component {
           currentRecipe={this.currentRecipe}
           showRecipe={() => this.setState({ page: "show recipe" })}
         ></Grid>
-        <button onClick={this.hitApi}>API</button>
       </div>
     )
   }

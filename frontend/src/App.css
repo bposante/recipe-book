@@ -1,10 +1,15 @@
 body {
 	margin: 0;
 	padding: 0;
+	background-color: rgba(248, 248, 248, 0.377);
 }
 
 .container {
 	display: grid;
 	grid-template-columns: 20rem 40rem;
-	grid-gap: 1rem;
+	grid-gap: 3rem;
+	padding: 1rem 5rem;
+	margin: auto;
+	line-height: 1.5rem;
+	font-size: 24px;
 }
