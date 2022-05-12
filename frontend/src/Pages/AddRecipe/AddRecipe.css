@@ -10,3 +10,14 @@
     margin-bottom: 10px !important;
 }
 
+.ingredient-chip {
+    width: fit-content;
+    min-width: 80px;
+    max-width: 200px !important;
+    margin-bottom: 3px !important;
+    margin-right: 2px !important;
+}
+
+.ingredient-chip:last-of-type {
+    margin-bottom: 10px !important;
+}
