@@ -1,5 +1,6 @@
 backend/venv
 backend/db_credentials.py
+backend/apikey.py
 
 # dependencies
 /.pnp

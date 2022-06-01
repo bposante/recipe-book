@@ -21,7 +21,7 @@ class RecipeCard extends React.Component {
   render() {
     return (
       <Card sx={{ maxWidth: 345, marginBottom: 1 }}>
-        <CardMedia component="img" height="140" image="" alt="recipe image"></CardMedia>
+        <CardMedia component="img" height="140" image={this.props.recipe.picture} alt="recipe image"></CardMedia>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {this.props.recipe.name}

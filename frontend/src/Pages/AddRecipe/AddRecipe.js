@@ -6,12 +6,13 @@ import Button from "@mui/material/Button"
 import Chip from "@mui/material/Chip"
 import Box from "@mui/material/Box"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
+import Tooltip from "@mui/material/Tooltip"
 import { Typography } from "@mui/material"
 
 class AddRecipe extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { name: "", ingredients: [], instructions: "", picture: "", time: "", description: "" }
+    this.state = { name: "", ingredients: [], instructions: "", picture: "", time: "", description: "", servings: "" }
 
     this.handleName = this.handleName.bind(this)
     this.handleIngredients = this.handleIngredients.bind(this)
@@ -19,6 +20,7 @@ class AddRecipe extends React.Component {
     this.handlePicture = this.handlePicture.bind(this)
     this.handleTime = this.handleTime.bind(this)
     this.handleDescription = this.handleDescription.bind(this)
+    this.handleServings = this.handleServings.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
   }
@@ -44,8 +46,7 @@ class AddRecipe extends React.Component {
   }
 
   handlePicture(event) {
-    this.setState({ picture: event.target.files[0] })
-    console.log(event.target.files)
+    this.setState({ picture: URL.createObjectURL(event.target.files[0]) })
   }
 
   handleTime(event) {
@@ -56,7 +57,12 @@ class AddRecipe extends React.Component {
     this.setState({ description: event.target.value })
   }
 
+  handleServings(event) {
+    this.setState({ servings: event.target.value})
+  }
+
   handleSubmit(event) {
+    // TODO: add error if submit with empty fields
     event.preventDefault()
     this.props.addRecipe(
       new Recipe(
@@ -65,7 +71,8 @@ class AddRecipe extends React.Component {
         this.state.instructions,
         this.state.picture,
         this.state.time,
-        this.state.description
+        this.state.description,
+        this.state.servings
       )
     )
     this.setState({
@@ -75,6 +82,7 @@ class AddRecipe extends React.Component {
       picture: "",
       time: "",
       description: "",
+      servings: "",
     })
   }
 
@@ -97,63 +105,100 @@ class AddRecipe extends React.Component {
           </Typography>
 
           <div>
-            <TextField
-              className="recipe-input"
-              label="Name"
-              size="small"
-              value={this.state.name}
-              onChange={this.handleName}
-            ></TextField>
+            <Tooltip title="The recipe name." placement="right">
+              <TextField
+                className="recipe-input"
+                label="Name"
+                size="small"
+                value={this.state.name}
+                onChange={this.handleName}
+              ></TextField>
+            </Tooltip>
           </div>
 
           <div>
-            <TextField
-              className="recipe-input"
-              label="Description"
-              size="small"
-              value={this.state.description}
-              onChange={this.handleDescription}
-            ></TextField>
+            <Tooltip title="A short description." placement="right">
+              <TextField
+                className="recipe-input"
+                label="Description"
+                size="small"
+                value={this.state.description}
+                onChange={this.handleDescription}
+              ></TextField>
+            </Tooltip>
           </div>
 
           <div>
-            <Box 
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap"
-            }}>
-              {this.state.ingredients.map((ingredient, i) => (
-                <Chip className="ingredient-chip" key={i} color="primary" size="small" onDelete={this.handleDelete} label={ingredient} />
-              ))}
-            </Box>
-            <TextField
-              className="recipe-input"
-              id="ing-recipe-input"
-              label="Ingredients"
-              size="small"
-              onKeyPress={this.handleIngredients}
-            ></TextField>
+            <Tooltip title="Number of servings this recipe makes." placement="right">
+              <TextField
+                className="recipe-input"
+                label="Servings"
+                size="small"
+                type="number"
+                value={this.state.servings}
+                onChange={this.handleServings}
+              ></TextField>
+            </Tooltip>
           </div>
 
           <div>
-            <TextField
-              className="recipe-input"
-              label="Instructions"
-              size="small"
-              value={this.state.instructions}
-              onChange={this.handleInstructions}
-            ></TextField>
+            <Tooltip title="The ingredients. Press enter after each ingredient." placement="right">
+              <span>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {this.state.ingredients.map((ingredient, i) => (
+                    <Chip
+                      className="ingredient-chip"
+                      key={i}
+                      color="primary"
+                      size="small"
+                      onDelete={this.handleDelete}
+                      label={ingredient}
+                    />
+                  ))}
+                </Box>
+                <TextField
+                  className="recipe-input"
+                  id="ing-recipe-input"
+                  label="Ingredients"
+                  size="small"
+                  onKeyPress={this.handleIngredients}
+                ></TextField>
+              </span>
+            </Tooltip>
           </div>
 
           <div>
-            <TextField
-              className="recipe-input"
-              label="Time"
-              size="small"
-              value={this.state.time}
-              onChange={this.handleTime}
-            ></TextField>
+            <Tooltip title="The recipe instructions. One instruction per line." placement="right">
+              <TextField
+                multiline
+                rows={4}
+                maxRows={8}
+                className="recipe-input"
+                label="Instructions"
+                size="small"
+                value={this.state.instructions}
+                onChange={this.handleInstructions}
+              ></TextField>
+            </Tooltip>
+          </div>
+
+          <div>
+            <Tooltip title="Time to cook the recipe in minutes." placement="right">
+              <TextField
+                className="recipe-input"
+                label="Time"
+                size="small"
+                type="number"
+                value={this.state.time}
+                onChange={this.handleTime}
+              ></TextField>
+            </Tooltip>
           </div>
 
           <div>
@@ -166,6 +211,7 @@ class AddRecipe extends React.Component {
               Submit
             </Button>
           </div>
+          <div>{this.state.picture && <img className="recipe-image" src={this.state.picture} alt=""></img>}</div>
         </form>
       </div>
     )

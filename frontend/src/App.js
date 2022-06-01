@@ -20,11 +20,32 @@ class App extends React.Component {
     this.hitApi = this.hitApi.bind(this)
   }
 
-  addRecipe(recipe) {
+  async addRecipe(recipe) {
     let recipes = this.state.recipes
     recipes.push(recipe)
     this.setState({
       recipes: recipes,
+    })
+
+    const formData = new FormData()
+    formData.append("name", recipe["name"])
+    formData.append("description", recipe["description"])
+    formData.append("instructions", recipe["instructions"])
+    formData.append("ingredients", JSON.stringify(recipe["ingredients"]))
+    formData.append("time", recipe["time"])
+    formData.append("image", recipe["image"])
+    formData.append("servings", recipe["servings"])
+
+    fetch("/addrecipe", {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    }).then(response => response.json())
+    .then(result => {
+      console.log(result)
+    })
+    .catch(error => {
+      console.error('Error:', error)
     })
   }
 

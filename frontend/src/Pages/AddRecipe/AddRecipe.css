@@ -10,6 +10,12 @@
     margin-bottom: 10px !important;
 }
 
+.recipe-image {
+    margin-top: 10px;
+    width: 230px;
+    border-radius: 5px;
+}
+
 .ingredient-chip {
     width: fit-content;
     min-width: 80px;
