@@ -1,3 +1,4 @@
+from time import sleep
 import mariadb
 from db_credentials import config
 
@@ -18,7 +19,7 @@ def execute_query(db_connection = None, query = None, query_params = ()):
         return None
 
     print("Executing %s with %s" % (query, query_params))
-    cursor = db_connection.cursor()
+    cursor = db_connection.cursor(buffered=True)
 
     cursor.execute(query, query_params)
     db_connection.commit()
