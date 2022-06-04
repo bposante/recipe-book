@@ -36,13 +36,6 @@ class RecipeCard extends React.Component {
           </div>
         </CardContent>
       </Card>
-
-      // <div className="card-component" onClick={this.selectRecipe}>
-      // 	<div>{this.props.recipe.name}</div>
-      // 	<div>{this.props.recipe.ingredients}</div>
-      // 	<div>{this.props.recipe.picture}</div>
-      // 	<div>{this.props.recipe.time}</div>
-      // </div>
     )
   }
 }

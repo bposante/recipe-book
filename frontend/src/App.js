@@ -1,9 +1,10 @@
-import React, { useEffect } from "react"
+import React from "react"
 import "./App.css"
 import Header from "./Header/Header"
 import Sidebar from "./Sidebar/Sidebar"
 import AddRecipe from "./Pages/AddRecipe/AddRecipe"
 import { ShowRecipe } from "./Pages/ShowRecipe/ShowRecipe"
+import Recipe from "./models"
 
 class App extends React.Component {
   constructor(props) {
@@ -12,12 +13,21 @@ class App extends React.Component {
       page: "default",
       recipes: [],
       api: {},
+      currentRecipe: null
     }
-    this.currentRecipe = null
     this.getRecipes = this.getRecipes.bind(this)
     this.addRecipe = this.addRecipe.bind(this)
     this.selectRecipe = this.selectRecipe.bind(this)
     this.hitApi = this.hitApi.bind(this)
+    this.getRecipe = this.getRecipe.bind(this)
+  }
+
+  componentDidMount() {
+    this.getRecipes().then((response) => {
+      this.setState({
+        recipes: response
+      })
+    })
   }
 
   async addRecipe(recipe) {
@@ -60,15 +70,40 @@ class App extends React.Component {
       })
   }
 
-  getRecipes() {
-    return this.state.recipes
+  // TODO: fix getting recipes from db
+  async getRecipes() {
+    return fetch("/getrecipes")
+      .then((res) => res.json())
+      .then((data) => {
+        let recipes = []
+        data.results.forEach((recipe) => {
+          // turn recipe data into recipe object
+          let obj = new Recipe(
+            recipe[2],
+            null,
+            recipe[8],
+            recipe[9],
+            recipe[3],
+            recipe[7],
+            recipe[5]
+          )
+          recipes.push(obj)
+        })
+        return recipes
+      })
+    
   }
 
   selectRecipe(recipe) {
-    console.log("selecting recipe:", recipe)
-    console.log("page:", this.state.page)
-    this.currentRecipe = recipe
+    this.setState({currentRecipe: recipe})
   }
+
+  async getRecipe(recipe) {
+    return fetch(`/getrecipe?recipe=${recipe.name}`)
+    .then((response) => {response.json()})
+    .then((data) => {return data})
+  }
+
 
   render() {
     return (
@@ -77,10 +112,11 @@ class App extends React.Component {
         <Grid
           className="app-body"
           page={this.state.page}
+          recipes={this.state.recipes}
           addRecipe={this.addRecipe}
           getRecipes={this.getRecipes}
           selectRecipe={this.selectRecipe}
-          currentRecipe={this.currentRecipe}
+          currentRecipe={this.state.currentRecipe}
           showRecipe={() => this.setState({ page: "show recipe" })}
         ></Grid>
       </div>
@@ -110,7 +146,7 @@ class Grid extends React.Component {
     return (
       <div className="container">
         <Sidebar
-          getRecipes={this.props.getRecipes}
+          recipes={this.props.recipes}
           selectRecipe={this.props.selectRecipe}
           showRecipe={this.props.showRecipe}
         ></Sidebar>

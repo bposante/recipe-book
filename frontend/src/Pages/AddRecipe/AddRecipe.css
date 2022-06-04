@@ -6,8 +6,12 @@
     margin-left: 10px !important;
 }
 
-.recipe-input {
-    margin-bottom: 10px !important;
+.input-div {
+    margin-top: 10px !important;
+}
+
+.recipe-form_buttons {
+    margin-top: 10px;
 }
 
 .recipe-image {
@@ -26,4 +30,8 @@
 
 .ingredient-chip:last-of-type {
     margin-bottom: 10px !important;
+}
+
+.inside-tooltip {
+    width: 230px;
 }

@@ -1,12 +1,17 @@
 import json
+import os
 from venv import create
 from flask import Flask, request
 from db_credentials import config
 from apikey import apiKey
 from db_connector import connect_to_database, execute_query
 import requests
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = '/home/bailey/projects/recipe-book/frontend/public'
 
 # sudo service mysql start
 # sudo mariadb to connect to database
@@ -36,9 +41,50 @@ def getRecipes():
     conn = connect_to_database()
     query = "select * from recipes;"
     cursor = execute_query(conn, query)
-    res = cursor.fetchall()
+    recipes = cursor.fetchall()
     cursor.close()
-    return {"results": res}
+    for recipe in recipes:
+        rId = getRecipeId(conn, {"name": recipe[2]})
+        ingredients = getRecipeIngredients(conn, rId)
+        print(ingredients)
+        # for ingredient in ingredients:
+
+    return {"results": recipes}
+
+
+@app.route("/getrecipe")
+def getRecipe():
+    conn = connect_to_database()
+    recipe = request.args.get("recipe")
+
+    query = "select * from recipes where recipe_name=%s"
+    cursor = execute_query(conn, query, (recipe,))
+    recipe = cursor.fetchall()[0]
+    recipeId = recipe[0]
+
+    query = "select * from recipe_ingredients where recipe_id=%s"
+    cursor = execute_query(conn, query, (recipeId,))
+    ingredients = cursor.fetchall()
+    cursor.close()
+
+    ingList = []
+    for ingredient in ingredients:
+        ingId = ingredient[2]
+        qId = ingredient[3]
+
+        query = "select ing_name from ingredients where ing_id=%s"
+        cursor = execute_query(conn, query, (ingId,))
+        ing = cursor.fetchall()[0][0]
+        cursor.close()
+
+        query = "select quantity from quantities where q_id=%s"
+        cursor = execute_query(conn, query, (qId,))
+        quantity = cursor.fetchall()[0][0]
+        cursor.close()
+
+        ingList.append(f"{quantity} {ing}")
+
+    return {"recipe": recipe, "ingredients": ingList}
 
 
 @app.route("/addrecipe", methods=['POST'])
@@ -70,6 +116,26 @@ def addrecipe():
     return {"result": "success"}
 
 
+@app.route("/uploadpicture", methods=['POST'])
+def uploadFile():
+    if 'file' not in request.files:
+        print("no file 1")
+        return {"error": "no file uploaded"}
+    file = request.files['file']
+    if file.filename == '':
+        print("no file 2")
+        return {"error": "no file uploaded"}
+    if file and allowed_file(file.filename): 
+        print("ok file")
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return {"filepath": app.config['UPLOAD_FOLDER'] + filename}
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def getRecipeValues(request):
     formData = request.form.to_dict()
     
@@ -79,7 +145,7 @@ def getRecipeValues(request):
         "ingredients": formData.get('ingredients'),
         "instructions": formData.get('instructions'),
         "time": formData.get('time'),
-        "image": formData.get('image'),
+        "image": app.config['UPLOAD_FOLDER'] + formData.get('image'),
         "servings": formData.get('servings')
     }
     return recipe
@@ -128,14 +194,22 @@ def insertIntoRecipeIngredients(conn, queryParams):
     cursor = execute_query(conn, query, queryParams)
     cursor.close()
 
+def getRecipeIngredients(conn, queryParams):
+    query = "select * from recipe_ingredients where recipe_id=%s;"
+    cursor = execute_query(conn, query, (queryParams,))
+    results = cursor.fetchall()
+    cursor.close()
+    return results
+
 def parseIngredients(recipe):
     # parse ingredients out into quantities and ingredient names
     parseUrl = f"https://api.spoonacular.com/recipes/parseIngredients?apiKey={apiKey}"
-    
+    ingredients = json.loads(recipe["ingredients"])
+    ingString = '\n'.join(ingredients)
     postData = {
         "includeNutrition": False,
         "servings": 1,
-        "ingredientList": json.loads(recipe["ingredients"])
+        "ingredientList": ingString
     }
 
     req = requests.post(parseUrl, (postData))

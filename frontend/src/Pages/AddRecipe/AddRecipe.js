@@ -23,6 +23,9 @@ class AddRecipe extends React.Component {
     this.handleServings = this.handleServings.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.uploadPicture = this.uploadPicture.bind(this)
+
+    this.pictureFolder = "/home/bailey/projects/recipe-book/frontend/public"
   }
 
   handleName(event) {
@@ -34,8 +37,6 @@ class AddRecipe extends React.Component {
       const ingArray = this.state.ingredients
       ingArray.push(event.target.value)
       this.setState({ ingredients: ingArray })
-      console.log("enter pressed")
-      console.log(this.state.ingredients)
       const ingInput = document.getElementById("ing-recipe-input")
       ingInput.value = ""
     }
@@ -87,13 +88,23 @@ class AddRecipe extends React.Component {
   }
 
   handleDelete(ingToDelete) {
-    console.log(ingToDelete)
     let ingArray = this.state.ingredients
     ingArray = ingArray.filter((ing) => ing !== ingToDelete)
     this.setState({
       ingredients: ingArray,
     })
     console.log(`ingredient deleted: ${ingToDelete} \ningredient array: ${this.state.ingredients}`)
+  }
+
+  uploadPicture(file) {
+    const formData = new FormData()
+    formData.append("file", file)
+    return fetch("http://localhost:5000/uploadpicture", {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData,
+    }).then(response => response.json())
+    .then(data => {console.log(data)})
   }
 
   render() {
@@ -104,7 +115,7 @@ class AddRecipe extends React.Component {
             Add A Recipe
           </Typography>
 
-          <div>
+          <div className="input-div">
             <Tooltip title="The recipe name." placement="right">
               <TextField
                 className="recipe-input"
@@ -116,7 +127,7 @@ class AddRecipe extends React.Component {
             </Tooltip>
           </div>
 
-          <div>
+          <div className="input-div">
             <Tooltip title="A short description." placement="right">
               <TextField
                 className="recipe-input"
@@ -128,7 +139,7 @@ class AddRecipe extends React.Component {
             </Tooltip>
           </div>
 
-          <div>
+          <div className="input-div">
             <Tooltip title="Number of servings this recipe makes." placement="right">
               <TextField
                 className="recipe-input"
@@ -141,14 +152,15 @@ class AddRecipe extends React.Component {
             </Tooltip>
           </div>
 
-          <div>
-            <Tooltip title="The ingredients. Press enter after each ingredient." placement="right">
-              <span>
+          <div className="input-div">
+            <Tooltip title="Press enter after each listed ingredient." placement="right">
+              <div className="inside-tooltip">
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: "row",
                     flexWrap: "wrap",
+                    width: "350px"
                   }}
                 >
                   {this.state.ingredients.map((ingredient, i) => (
@@ -169,12 +181,12 @@ class AddRecipe extends React.Component {
                   size="small"
                   onKeyPress={this.handleIngredients}
                 ></TextField>
-              </span>
+                </div>
             </Tooltip>
           </div>
 
-          <div>
-            <Tooltip title="The recipe instructions. One instruction per line." placement="right">
+          <div className="input-div">
+            <Tooltip title="Enter the recipe instructions in a numbered list with each instruction on a new line." placement="right">
               <TextField
                 multiline
                 rows={4}
@@ -188,7 +200,7 @@ class AddRecipe extends React.Component {
             </Tooltip>
           </div>
 
-          <div>
+          <div className="input-div">
             <Tooltip title="Time to cook the recipe in minutes." placement="right">
               <TextField
                 className="recipe-input"
@@ -201,13 +213,13 @@ class AddRecipe extends React.Component {
             </Tooltip>
           </div>
 
-          <div>
-            <Button variant="contained" component="label">
+          <div className="recipe-form_buttons">
+            <Button variant="outlined" component="label">
               Add Image
               <input onChange={this.handlePicture} type="file" hidden />
               <AddAPhotoIcon></AddAPhotoIcon>
             </Button>
-            <Button variant="outlined" className="submit-recipe" onClick={this.handleSubmit}>
+            <Button id="submit-button" variant="contained" className="submit-recipe" onClick={this.handleSubmit}>
               Submit
             </Button>
           </div>
