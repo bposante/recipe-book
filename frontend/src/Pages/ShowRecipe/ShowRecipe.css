@@ -3,3 +3,22 @@
     height: 300px;
     object-fit: cover;
 }
+
+.ingredient-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.convert-button {
+    left: -250px;
+    display: none !important;
+}
+
+.ingredient-container:hover .convert-button {
+    display: inline !important;
+}
+
+.unit-answer {
+    margin-top: 10px !important;
+}
